@@ -70,4 +70,4 @@ cd smart-edu-platform
 mvn clean compile
 
 # Run the application
-mvn spring-boot:run
+mvn spring-boot:run# smart-edu

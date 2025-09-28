@@ -9,8 +9,8 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Copy the correct application.properties from config folder
-COPY src/main/resources/config/application.properties /app/application.properties
+# FIXED: Copy from correct location
+COPY application.properties /app/application.properties
 
 # Copy JAR file
 COPY target/smart-edu-platform-1.0.0.0.jar app.jar
@@ -26,7 +26,7 @@ USER spring
 # Expose port
 EXPOSE 8080
 
-# Simple health check (remove complex one for now)
+# Simple health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:8080/ || exit 1
 

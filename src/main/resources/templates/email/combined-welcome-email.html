@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Smart Edu Platform</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border: 2px solid #e0e0e0;
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 35px 30px;
+            text-align: center;
+            color: white;
+            border-bottom: 4px solid #5a6fdb;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 35px;
+        }
+        .welcome-text {
+            font-size: 18px;
+            margin-bottom: 25px;
+            color: #444;
+        }
+        .credentials-box {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-left: 5px solid #28a745;
+            margin: 25px 0;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .credential-item {
+            margin: 15px 0;
+            font-size: 16px;
+            padding: 8px 0;
+        }
+        .credential-label {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        .username {
+            font-size: 22px;
+            font-weight: bold;
+            color: #0056b3;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+            border: 2px solid #90caf9;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .password {
+            font-size: 22px;
+            font-weight: bold;
+            color: #28a745;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+            border: 2px solid #a5d6a7;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            letter-spacing: 2px;
+        }
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 35px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 20px 0;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(102, 126, 234, 0.6);
+        }
+        .features {
+            margin: 30px 0;
+            background: #fafafa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        .feature-item {
+            margin: 12px 0;
+            padding-left: 25px;
+            position: relative;
+            font-size: 15px;
+        }
+        .feature-item:before {
+            content: "✓";
+            color: #28a745;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+            font-size: 18px;
+        }
+        .user-type-badge {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 15px 0;
+            box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
+        }
+        .footer {
+            text-align: center;
+            padding: 25px;
+            font-size: 14px;
+            color: #666;
+            border-top: 2px solid #eee;
+            background: #f8f9fa;
+        }
+        .login-section {
+            text-align: center;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border: 2px solid #c8e6c9;
+        }
+        .login-section h3 {
+            color: #2e7d32;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+        .security-note {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            color: #856404;
+        }
+        a {
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome to Smart Edu Platform!</h1>
+            <p>Your <span th:text="${userType}">Account</span> is Ready</p>
+        </div>
+        
+        <div class="content">
+            <p class="welcome-text">Dear <strong th:text="${firstName}">User</strong>,</p>
+            
+            <p>We are thrilled to welcome you to the Smart Edu Platform! Your account has been successfully created and is ready to use.</p>
+            
+            <div style="text-align: center;">
+                <div class="user-type-badge" th:text="${userType} + ' Account'">Account Type</div>
+            </div>
+
+            <div class="login-section">
+                <h3>Your Login Credentials</h3>
+                <div class="credential-item">
+                    <span class="credential-label">Username:</span>
+                    <div class="username" th:text="${username}">username</div>
+                </div>
+                
+                <div class="credential-item" th:if="${tempPassword}">
+                    <span class="credential-label">Temporary Password:</span>
+                    <div class="password" th:text="${tempPassword}">temp_password</div>
+                </div>
+                
+                <p>Keep these credentials safe and secure.</p>
+                <a th:href="${loginUrl}" class="button">Login to Your Account</a>
+            </div>
+
+            <div class="security-note" th:if="${tempPassword}">
+                <h4>🔐 Security Notice:</h4>
+                <p><strong>This is a temporary password. You must change it immediately after first login.</strong></p>
+            </div>
+
+            <div class="features">
+                <h3>What you can do as a <span th:text="${userType}">user</span>:</h3>
+                <div class="feature-item" th:if="${userType == 'Teacher'}">Create and manage courses</div>
+                <div class="feature-item" th:if="${userType == 'Teacher'}">Upload educational materials</div>
+                <div class="feature-item" th:if="${userType == 'Teacher'}">Track student progress</div>
+                <div class="feature-item" th:if="${userType == 'Student'}">Enroll in courses</div>
+                <div class="feature-item" th:if="${userType == 'Student'}">Access learning materials</div>
+                <div class="feature-item" th:if="${userType == 'Student'}">Submit assignments</div>
+                <div class="feature-item" th:if="${userType == 'Administrator'}">Manage teachers and students</div>
+                <div class="feature-item" th:if="${userType == 'Administrator'}">Monitor system activity</div>
+                <div class="feature-item" th:if="${userType == 'Administrator'}">Generate reports and analytics</div>
+                <div class="feature-item">Connect with the educational community</div>
+                <div class="feature-item">Access resources anytime, anywhere</div>
+            </div>
+
+            <div class="credentials-box">
+                <h3>Important Information</h3>
+                <div class="credential-item">
+                    <span class="credential-label">Login URL:</span> 
+                    <a th:href="${loginUrl}" th:text="${loginUrl}">http://localhost:8080/auth/login</a>
+                </div>
+                <div class="credential-item">
+                    <span class="credential-label">Support Email:</span> 
+                    <a th:href="'mailto:' + ${supportEmail}" th:text="${supportEmail}">support</a>
+                </div>
+            </div>
+            
+            <p>If you have any questions or need assistance, please don't hesitate to contact our support team.</p>
+            
+            <p>We're excited to have you with us and look forward to supporting your educational journey!</p>
+            
+            <p>Best regards,<br>
+            <strong th:text="${companyName}">The Smart Edu Platform Team</strong></p>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; 2024 <span th:text="${companyName}">Smart Edu Platform</span>. All rights reserved.</p>
+            <p>This is an automated email. Please do not reply to this message.</p>
+        </div>
+    </div>
+</body>
+</html>
+[file content end]

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Smart Edu Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #0056b3;
+            --accent-red: #d9534f;
+            --accent-orange: #ffa502;
+            --accent-purple: #764ba2;
+            --accent-green: #28a745;
+            --light-gray: #f8f9fa;
+            --dark-gray: #343a40;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 460px;
+            overflow: hidden;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .login-header {
+            background: var(--primary-blue);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .login-header h1 {
+            font-size: 1.9rem;
+            margin-bottom: 8px;
+        }
+
+        .login-header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .login-body {
+            padding: 25px;
+        }
+
+        /* Role Selector */
+        .role-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .role-btn {
+            padding: 0.9rem;
+            border: 2px solid #ddd;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .role-btn.active {
+            color: white;
+        }
+
+        .role-btn.superadmin.active {
+            border-color: var(--accent-red);
+            background: var(--accent-red);
+        }
+
+        .role-btn.admin.active {
+            border-color: var(--accent-orange);
+            background: var(--accent-orange);
+        }
+
+        .role-btn.teacher.active {
+            border-color: var(--accent-green);
+            background: var(--accent-green);
+        }
+
+        .role-btn.student.active {
+            border-color: var(--primary-blue);
+            background: var(--primary-blue);
+        }
+
+        .role-description {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #666;
+            min-height: 20px;
+        }
+
+        /* Login Forms */
+        .login-form {
+            display: none;
+            animation: slideIn 0.4s ease;
+        }
+
+        .login-form.active {
+            display: block;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .alert-error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #f44336;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #4caf50;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+
+        .form-label i {
+            margin-right: 6px;
+        }
+
+        .superadmin-form .form-label i { color: var(--accent-red); }
+        .admin-form .form-label i { color: var(--accent-orange); }
+        .teacher-form .form-label i { color: var(--accent-green); }
+        .student-form .form-label i { color: var(--primary-blue); }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            box-shadow: 0 0 6px rgba(0, 86, 179, 0.25);
+        }
+
+        .superadmin-form .form-control:focus { border-color: var(--accent-red); }
+        .admin-form .form-control:focus { border-color: var(--accent-orange); }
+        .teacher-form .form-control:focus { border-color: var(--accent-green); }
+        .student-form .form-control:focus { border-color: var(--primary-blue); }
+
+        /* Captcha */
+        .captcha-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin: 12px 0;
+        }
+
+        .captcha-display {
+            flex: 1;
+            background: #eef3fc;
+            border: 2px dashed;
+            padding: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-align: center;
+            border-radius: 8px;
+            user-select: none;
+        }
+
+        .superadmin-form .captcha-display { border-color: var(--accent-red); background: #ffeaea; }
+        .admin-form .captcha-display { border-color: var(--accent-orange); background: #fff3e0; }
+        .teacher-form .captcha-display { border-color: var(--accent-green); background: #e8f5e9; }
+        .student-form .captcha-display { border-color: var(--primary-blue); background: #eef3fc; }
+
+        .btn-refresh {
+            background: var(--light-gray);
+            border: none;
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-refresh:hover {
+            background: #e2e6ea;
+        }
+
+        /* Login button */
+        .btn-login {
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s, transform 0.2s;
+            font-weight: bold;
+        }
+
+        .superadmin-form .btn-login { background: var(--accent-red); }
+        .admin-form .btn-login { background: var(--accent-orange); }
+        .teacher-form .btn-login { background: var(--accent-green); }
+        .student-form .btn-login { background: var(--primary-blue); }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .superadmin-form .btn-login:hover { background: #c9302c; }
+        .admin-form .btn-login:hover { background: #e59400; }
+        .teacher-form .btn-login:hover { background: #218838; }
+        .student-form .btn-login:hover { background: #004494; }
+
+        /* Footer links */
+        .links {
+            text-align: center;
+            margin-top: 18px;
+        }
+
+        .links a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            margin: 0 8px;
+            font-size: 0.9rem;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        .register-hint {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .register-hint a {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        .register-hint a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <!-- Header -->
+        <div class="login-header">
+            <h1><i class="fas fa-graduation-cap"></i> SmartEdu Login</h1>
+            <p>Select your role & login with credentials</p>
+        </div>
+
+        <!-- Body -->
+        <div class="login-body">
+            <!-- Role Selector -->
+            <div class="role-selector">
+                <div class="role-btn superadmin" data-role="superadmin">Super Admin</div>
+                <div class="role-btn admin" data-role="admin">Admin</div>
+                <div class="role-btn teacher active" data-role="teacher">Teacher</div>
+                <div class="role-btn student" data-role="student">Student</div>
+            </div>
+            <div class="role-description" id="roleDescription">
+                Create and manage quizzes for students
+            </div>
+
+            <!-- Alerts -->
+            <div th:if="${param.error}" class="alert alert-error" role="alert">
+                <i class="fas fa-exclamation-circle"></i> Invalid username, password or captcha
+            </div>
+            <div th:if="${param.captchaError}" class="alert alert-error" role="alert">
+                <i class="fas fa-exclamation-circle"></i> Invalid captcha code. Please try again.
+            </div>
+            <div th:if="${param.registered}" class="alert alert-success" role="alert">
+                <i class="fas fa-check-circle"></i> Registration successful! Check your email for username.
+            </div>
+
+            <!-- SINGLE LOGIN FORM - DYNAMIC ROLE -->
+            <form th:action="@{/auth/login}" method="post" class="login-form active" id="login-form">
+                <input type="hidden" name="role" id="selectedRole" value="teacher" />
+                
+                <div class="form-group">
+                    <label class="form-label" for="username">
+                        <i class="fas fa-user" id="usernameIcon"></i> 
+                        <span id="usernameLabel">Teacher Username</span>
+                    </label>
+                    <input type="text" id="username" name="username" class="form-control"
+                        placeholder="Enter your username" required th:value="${param.username}">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <input type="password" id="password" name="password" class="form-control"
+                        placeholder="Enter your password" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-shield-alt"></i> Security Captcha
+                    </label>
+                    <div class="captcha-container">
+                        <div class="captcha-display" id="captchaDisplay" th:text="${captcha}">CX9$3D</div>
+                        <button type="button" class="btn-refresh" onclick="refreshCaptcha()" title="Refresh captcha">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                    </div>
+                    <input type="hidden" id="captcha" name="captcha" th:value="${captcha}">
+                    <input type="text" id="captchaInput" name="captchaInput" class="form-control"
+                        placeholder="Enter the captcha above" required>
+                </div>
+
+                <button type="submit" class="btn-login" id="loginButton">
+                    <i class="fas fa-sign-in-alt"></i> Login as <span id="loginRole">Teacher</span>
+                </button>
+            </form>
+
+            <!-- Links -->
+            <div class="links">
+                <a href="/auth/forgot-password"><i class="fas fa-key"></i> Forgot Password?</a>
+                <a href="/"><i class="fas fa-home"></i> Back to Home</a>
+            </div>
+
+            <div class="register-hint">
+                Don't have an account?
+                <a href="/auth/register/teacher">Teacher Registration</a> |
+                <a href="/auth/register/student">Student Registration</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Role configurations
+        const roleConfigs = {
+            'superadmin': {
+                description: 'Full system access and administration',
+                usernameLabel: 'Super Admin Username',
+                usernameIcon: 'fa-crown',
+                buttonColor: '#d9534f'
+            },
+            'admin': {
+                description: 'Manage institutions, teachers, and students',
+                usernameLabel: 'Admin Username', 
+                usernameIcon: 'fa-user-shield',
+                buttonColor: '#ffa502'
+            },
+            'teacher': {
+                description: 'Create and manage quizzes for students',
+                usernameLabel: 'Teacher Username',
+                usernameIcon: 'fa-chalkboard-teacher',
+                buttonColor: '#28a745'
+            },
+            'student': {
+                description: 'Take quizzes and view results',
+                usernameLabel: 'Student EDU ID',
+                usernameIcon: 'fa-user-graduate',
+                buttonColor: '#0056b3'
+            }
+        };
+
+        const roleButtons = document.querySelectorAll('.role-btn');
+        const roleDescription = document.getElementById('roleDescription');
+        const selectedRoleInput = document.getElementById('selectedRole');
+        const usernameLabel = document.getElementById('usernameLabel');
+        const usernameIcon = document.getElementById('usernameIcon');
+        const loginRole = document.getElementById('loginRole');
+        const loginForm = document.getElementById('login-form');
+        const loginButton = document.getElementById('loginButton');
+
+        // Update form based on selected role
+        function updateFormForRole(role) {
+            const config = roleConfigs[role];
+            
+            // Update role description
+            roleDescription.textContent = config.description;
+            
+            // Update username label and icon
+            usernameLabel.textContent = config.usernameLabel;
+            usernameIcon.className = 'fas ' + config.usernameIcon;
+            
+            // Update login button text
+            loginRole.textContent = role.charAt(0).toUpperCase() + role.slice(1);
+            
+            // Update form class for styling
+            loginForm.className = 'login-form active ' + role + '-form';
+            loginButton.style.backgroundColor = config.buttonColor;
+            
+            // Update hidden role field
+            selectedRoleInput.value = role;
+            
+            // Clear form fields
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('captchaInput').value = '';
+            
+            // Focus on username field
+            document.getElementById('username').focus();
+        }
+
+        // Role selection
+        roleButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const selectedRole = this.dataset.role;
+                
+                // Update active button
+                roleButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update form
+                updateFormForRole(selectedRole);
+            });
+        });
+
+        // Refresh captcha
+        function refreshCaptcha() {
+            window.location.href = '/auth/login?refresh=true';
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const roleFromUrl = urlParams.get('role');
+            
+            // Priority: URL parameter > Default teacher
+            const targetRole = roleFromUrl || 'teacher';
+            
+            if (targetRole && roleConfigs[targetRole]) {
+                // Remove active class from all buttons
+                roleButtons.forEach(b => b.classList.remove('active'));
+                
+                // Activate the correct button
+                const targetBtn = document.querySelector(`.role-btn[data-role="${targetRole}"]`);
+                if (targetBtn) {
+                    targetBtn.classList.add('active');
+                    updateFormForRole(targetRole);
+                }
+            } else {
+                updateFormForRole('teacher');
+            }
+            
+            document.getElementById('username').focus();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration - Smart Edu Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #0056b3;
+            --secondary-blue: #003366;
+            --accent-red: #d9534f;
+            --success-green: #28a745;
+            --light-gray: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .registration-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+        }
+
+        .registration-header {
+            background: var(--primary-blue);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .registration-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .registration-body {
+            padding: 30px;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--border-color);
+            z-index: 1;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--border-color);
+            color: #343a40;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: bold;
+            border: 3px solid white;
+        }
+
+        .step.active .step-number {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .step.completed .step-number {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            color: #343a40;
+        }
+
+        .step.active .step-label {
+            color: var(--primary-blue);
+            font-weight: bold;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #343a40;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--border-color);
+            color: #343a40;
+        }
+
+        .btn-success {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .error-message {
+            color: var(--accent-red);
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .password-strength {
+            height: 4px;
+            background: var(--border-color);
+            border-radius: 2px;
+            margin-top: 5px;
+        }
+
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .alert-error {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .verification-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .email-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .email-input {
+            flex: 1;
+        }
+
+        .btn-send-otp {
+            background: var(--success-green);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            white-space: nowrap;
+            min-width: 120px;
+        }
+
+        .btn-send-otp:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .btn-send-otp.loading {
+            background: #ffc107;
+        }
+
+        .otp-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .otp-input {
+            flex: 1;
+        }
+
+        .btn-verify {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            white-space: nowrap;
+            min-width: 100px;
+        }
+
+        .btn-verify:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .status-message {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--light-gray);
+            color: #6c757d;
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .email-group,
+            .otp-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="registration-container">
+        <div class="registration-header">
+            <h1><i class="fas fa-user-graduate"></i> Student Registration</h1>
+            <p>Join Smart Edu Platform to enhance your learning experience</p>
+        </div>
+
+        <div class="progress-steps">
+            <div class="step active" id="step1">
+                <div class="step-number">1</div>
+                <div class="step-label">Personal Info</div>
+            </div>
+            <div class="step" id="step2">
+                <div class="step-number">2</div>
+                <div class="step-label">Academic Details</div>
+            </div>
+            <div class="step" id="step3">
+                <div class="step-number">3</div>
+                <div class="step-label">Account Setup</div>
+            </div>
+        </div>
+
+        <div class="registration-body">
+            <div th:if="${error}" class="alert alert-error">
+                <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+            </div>
+
+            <form id="studentRegistrationForm" th:action="@{/auth/register/student}" th:object="${registrationRequest}"
+                method="post">
+                <input type="hidden" name="captcha" th:value="${captcha}" />
+                <input type="hidden" id="emailVerified" name="emailVerified" value="false">
+
+                <!-- Step 1: Personal Information -->
+                <div class="form-section active" id="section1">
+                    <h3 style="margin-bottom: 20px; color: var(--primary-blue);">Personal Information</h3>
+                    <div class="form-grid">
+                        <div class="form-group"><label class="form-label" for="firstName">First Name *</label><input
+                                type="text" id="firstName" th:field="*{firstName}" class="form-control" required>
+                            <div class="error-message" id="firstNameError"></div>
+                        </div>
+                        <div class="form-group"><label class="form-label" for="lastName">Last Name *</label><input
+                                type="text" id="lastName" th:field="*{lastName}" class="form-control" required>
+                            <div class="error-message" id="lastNameError"></div>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <label class="form-label" for="email">Email Address *</label>
+                            <div class="email-group">
+                                <input type="email" id="email" th:field="*{email}" class="form-control email-input" required placeholder="Enter your email">
+                                <button type="button" id="sendOtpBtn" class="btn-send-otp" onclick="checkEmailAndSendOtp()" disabled>
+                                    Send OTP
+                                </button>
+                            </div>
+                            <div id="emailStatus" class="status-message"></div>
+                        </div>
+
+                        <!-- Email Verification Section -->
+                        <div class="form-group full-width">
+                            <div id="verificationSection" class="verification-section" style="display: none;">
+                                <label class="form-label"><i class="fas fa-shield-alt"></i> Email Verification</label>
+                                <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">
+                                    Enter the verification code sent to your email
+                                </p>
+
+                                <div class="otp-group">
+                                    <input type="text" id="emailOtp" name="emailOtp" class="form-control otp-input"
+                                        placeholder="Enter 6-digit OTP" maxlength="6">
+                                    <button type="button" id="verifyOtpBtn" class="btn-verify" onclick="verifyEmailOtp()">
+                                        Verify
+                                    </button>
+                                </div>
+
+                                <div id="verificationStatus" class="status-message"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group"><label class="form-label" for="phone">Phone Number *</label><input
+                                type="tel" id="phone" th:field="*{phone}" class="form-control" required>
+                            <div class="error-message" id="phoneError"></div>
+                        </div>
+                        <div class="form-group"><label class="form-label" for="dateOfBirth">Date of Birth
+                                *</label><input type="date" id="dateOfBirth" th:field="*{dateOfBirth}"
+                                class="form-control" required>
+                            <div class="error-message" id="dobError"></div>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <div></div>
+                        <button type="button" class="btn btn-primary" onclick="nextSection(2)" id="nextToAcademic" disabled>Next <i
+                                class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Academic Details -->
+                <div class="form-section" id="section2">
+                    <h3 style="margin-bottom: 20px; color: var(--primary-blue);">Academic Details</h3>
+                    <div class="form-grid">
+                        <div class="form-group full-width"><label class="form-label" for="schoolName">School/College
+                                *</label><input type="text" id="schoolName" th:field="*{schoolName}"
+                                class="form-control" required>
+                            <div class="error-message" id="schoolError"></div>
+                        </div>
+                        <div class="form-group"><label class="form-label" for="subject">Primary Subject *</label>
+                            <select id="subject" th:field="*{subject}" class="form-select" required>
+                                <option value="">Select Subject</option>
+                                <option value="Mathematics">Mathematics</option>
+                                <option value="Science">Science</option>
+                                <option value="English">English</option>
+                                <option value="History">History</option>
+                                <option value="Geography">Geography</option>
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Physics">Physics</option>
+                                <option value="Chemistry">Chemistry</option>
+                                <option value="Biology">Biology</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <div class="error-message" id="subjectError"></div>
+                        </div>
+                        <div class="form-group"><label class="form-label" for="experience">Grade/Class</label>
+                            <select id="experience" th:field="*{experience}" class="form-select">
+                                <option value="Class 1-5">Class 1-5</option>
+                                <option value="Class 6-8">Class 6-8</option>
+                                <option value="Class 9-10">Class 9-10</option>
+                                <option value="Class 11-12">Class 11-12</option>
+                                <option value="College">College</option>
+                                <option value="University">University</option>
+                            </select>
+                        </div>
+                        <div class="form-group full-width"><label class="form-label" for="qualification">Current
+                                Qualification *</label>
+                            <select id="qualification" th:field="*{qualification}" class="form-select" required>
+                                <option value="">Select Qualification</option>
+                                <option value="School Student">School Student</option>
+                                <option value="High School">High School</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Graduate">Graduate</option>
+                                <option value="Post Graduate">Post Graduate</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <div class="error-message" id="qualificationError"></div>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary" onclick="prevSection(1)"><i
+                                class="fas fa-arrow-left"></i> Previous</button>
+                        <button type="button" class="btn btn-primary" onclick="nextSection(3)">Next <i
+                                class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Account Setup -->
+                <div class="form-section" id="section3">
+                    <h3 style="margin-bottom: 20px; color: var(--primary-blue);">Account Setup</h3>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> <strong>Important:</strong> Your username will be
+                        automatically generated (10-digit number) and sent to your email after registration.
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group full-width"><label class="form-label" for="password">Password
+                                *</label><input type="password" id="password" th:field="*{password}"
+                                class="form-control" required>
+                            <div class="password-strength">
+                                <div class="strength-bar" id="passwordStrength"></div>
+                            </div>
+                            <div class="error-message" id="passwordError"></div>
+                        </div>
+                        <div class="form-group full-width"><label class="form-label" for="confirmPassword">Confirm
+                                Password *</label><input type="password" id="confirmPassword" name="confirmPassword"
+                                class="form-control" required>
+                            <div class="error-message" id="confirmPasswordError"></div>
+                        </div>
+                        <div class="form-group full-width">
+                            <label class="form-label" for="captchaInput">Enter CAPTCHA *</label>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <input type="text" id="captchaInput" name="captchaInput" class="form-control"
+                                    style="flex: 1;" placeholder="Enter the CAPTCHA code" required>
+                                <div
+                                    style="background: #f8f9fa; padding: 10px 15px; border-radius: 5px; font-weight: bold; font-size: 1.2rem; letter-spacing: 2px; border: 2px solid var(--border-color);">
+                                    <span th:text="${captcha}">CAPTCHA</span>
+                                </div>
+                            </div>
+                            <div class="error-message" id="captchaError"></div>
+                        </div>
+                    </div>
+                    <div class="terms-checkbox">
+                        <input type="checkbox" id="acceptTerms" name="acceptTerms" required>
+                        <label for="acceptTerms" style="font-size: 0.9rem;">I agree to the <a href="#"
+                                style="color: var(--primary-blue);">Terms of Service</a> and <a href="#"
+                                style="color: var(--primary-blue);">Privacy Policy</a> *</label>
+                    </div>
+                    <div class="error-message" id="termsError"></div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary" onclick="prevSection(2)"><i
+                                class="fas fa-arrow-left"></i> Previous</button>
+                        <button type="submit" class="btn btn-success"><i class="fas fa-user-plus"></i> Create
+                            Account</button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="back-link"><a href="/auth/login"><i class="fas fa-sign-in-alt"></i> Back to Login</a></div>
+        </div>
+
+        <div class="footer">
+            &copy; 2025 Koushal Jha i Technologies. All rights reserved. | koushaljhait.com
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <script>
+        let currentSection = 1;
+        
+        function showSection(sectionNumber) {
+            currentSection = sectionNumber;
+            document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
+            document.getElementById('section' + sectionNumber).classList.add('active');
+            document.querySelectorAll('.step').forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index + 1 < sectionNumber) step.classList.add('completed');
+                else if (index + 1 === sectionNumber) step.classList.add('active');
+            });
+        }
+        
+        function nextSection(next) { 
+            if (validateSection(currentSection)) {
+                showSection(next); 
+            }
+        }
+        
+        function prevSection(prev) { 
+            showSection(prev); 
+        }
+        
+        function validateSection(sectionNumber) {
+            let isValid = true; 
+            const section = document.getElementById('section' + sectionNumber);
+            section.querySelectorAll('.error-message').forEach(error => error.style.display = 'none');
+            
+            const requiredFields = section.querySelectorAll('[required]');
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false; 
+                    const errorId = field.id + 'Error'; 
+                    const errorElement = document.getElementById(errorId);
+                    if (errorElement) { 
+                        errorElement.textContent = 'This field is required'; 
+                        errorElement.style.display = 'block'; 
+                    } 
+                }
+            });
+            
+            // Email validation for section 1
+            if (sectionNumber === 1) {
+                const emailField = document.getElementById('email');
+                if (emailField && emailField.value) { 
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(emailField.value)) { 
+                        isValid = false; 
+                        document.getElementById('emailError').textContent = 'Please enter a valid email address'; 
+                        document.getElementById('emailError').style.display = 'block'; 
+                    } 
+                }
+            }
+            
+            return isValid;
+        }
+
+        // Email Verification Functions
+        function checkEmailAndSendOtp() {
+            const email = document.getElementById('email').value;
+            const firstName = document.getElementById('firstName').value;
+            const btn = document.getElementById('sendOtpBtn');
+
+            if (btn.classList.contains('loading')) {
+                return;
+            }
+
+            if (!email) {
+                showEmailStatus('Please enter email address', 'error');
+                return;
+            }
+
+            if (!firstName) {
+                showEmailStatus('Please enter your first name', 'error');
+                return;
+            }
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+            btn.disabled = true;
+            btn.classList.add('loading');
+
+            checkEmailAvailability(email)
+                .then(isAvailable => {
+                    if (isAvailable) {
+                        sendVerificationOtp(email, firstName);
+                    } else {
+                        btn.innerHTML = 'Send OTP';
+                        btn.disabled = false;
+                        btn.classList.remove('loading');
+                    }
+                })
+                .catch(error => {
+                    showEmailStatus('Error checking email: ' + error, 'error');
+                    btn.innerHTML = 'Send OTP';
+                    btn.disabled = false;
+                    btn.classList.remove('loading');
+                });
+        }
+
+        function checkEmailAvailability(email) {
+            return new Promise((resolve, reject) => {
+                fetch('/auth/check-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `email=${encodeURIComponent(email)}`
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.available) {
+                            showEmailStatus('✓ Email is available', 'success');
+                            resolve(true);
+                        } else {
+                            showEmailStatus('✗ ' + data.message, 'error');
+                            resolve(false);
+                        }
+                    })
+                    .catch(error => {
+                        showEmailStatus('Error checking email availability', 'error');
+                        reject(error);
+                    });
+            });
+        }
+
+        function sendVerificationOtp(email, firstName) {
+            const btn = document.getElementById('sendOtpBtn');
+            
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending OTP...';
+            
+            fetch('/auth/send-verification-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `email=${encodeURIComponent(email)}&firstName=${encodeURIComponent(firstName)}`
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showEmailStatus('✓ OTP sent to your email', 'success');
+                        // Show verification section
+                        document.getElementById('verificationSection').style.display = 'block';
+                        document.getElementById('emailOtp').focus();
+                        
+                        btn.innerHTML = 'Resend OTP';
+                        btn.disabled = false;
+                        btn.classList.remove('loading');
+                    } else {
+                        showEmailStatus('✗ ' + data.message, 'error');
+                        btn.innerHTML = 'Send OTP';
+                        btn.disabled = false;
+                        btn.classList.remove('loading');
+                    }
+                })
+                .catch(error => {
+                    showEmailStatus('Error sending OTP: ' + error.message, 'error');
+                    btn.innerHTML = 'Send OTP';
+                    btn.disabled = false;
+                    btn.classList.remove('loading');
+                });
+        }
+
+        function verifyEmailOtp() {
+            const email = document.getElementById('email').value;
+            const otp = document.getElementById('emailOtp').value;
+            const btn = document.getElementById('verifyOtpBtn');
+
+            if (btn.classList.contains('loading')) {
+                return;
+            }
+
+            if (!otp || otp.length !== 6) {
+                showVerificationStatus('Please enter a valid 6-digit OTP', 'error');
+                return;
+            }
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+            btn.disabled = true;
+            btn.classList.add('loading');
+
+            fetch('/auth/verify-email-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showVerificationStatus('✓ Email verified successfully!', 'success');
+                        document.getElementById('emailVerified').value = 'true';
+                        document.getElementById('nextToAcademic').disabled = false;
+
+                        document.getElementById('emailOtp').disabled = true;
+                        document.getElementById('verifyOtpBtn').disabled = true;
+                        document.getElementById('sendOtpBtn').disabled = true;
+                        
+                        btn.classList.remove('loading');
+                    } else {
+                        showVerificationStatus('✗ ' + data.message, 'error');
+                        btn.innerHTML = 'Verify';
+                        btn.disabled = false;
+                        btn.classList.remove('loading');
+                    }
+                })
+                .catch(error => {
+                    showVerificationStatus('Error verifying OTP: ' + error.message, 'error');
+                    btn.innerHTML = 'Verify';
+                    btn.disabled = false;
+                    btn.classList.remove('loading');
+                });
+        }
+
+        function showEmailStatus(message, type) {
+            const statusEl = document.getElementById('emailStatus');
+            statusEl.textContent = message;
+            statusEl.className = 'status-message status-' + type;
+        }
+
+        function showVerificationStatus(message, type) {
+            const statusEl = document.getElementById('verificationStatus');
+            statusEl.textContent = message;
+            statusEl.className = 'status-message status-' + type;
+        }
+
+        // Password strength functions
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            return strength;
+        }
+
+        function updatePasswordStrength(strength) {
+            const strengthBar = document.getElementById('passwordStrength');
+            const colors = ['#dc3545', '#ffc107', '#17a2b8', '#28a745', '#28a745'];
+            const widths = ['20%', '40%', '60%', '80%', '100%'];
+            strengthBar.style.backgroundColor = colors[Math.min(strength, 4)];
+            strengthBar.style.width = widths[Math.min(strength, 4)];
+        }
+
+        // Form submission validation
+        document.getElementById('studentRegistrationForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            let allValid = true;
+            
+            // Validate all sections
+            for (let i = 1; i <= 3; i++) {
+                if (!validateSection(i)) {
+                    allValid = false;
+                    showSection(i);
+                    break;
+                }
+            }
+            
+            // Check email verification
+            if (document.getElementById('emailVerified').value !== 'true') {
+                allValid = false;
+                showVerificationStatus('Please verify your email before registering', 'error');
+                showSection(1);
+            }
+            
+            // Check terms acceptance
+            const termsCheckbox = document.getElementById('acceptTerms');
+            if (!termsCheckbox.checked) {
+                allValid = false;
+                document.getElementById('termsError').textContent = 'You must accept the terms and conditions';
+                document.getElementById('termsError').style.display = 'block';
+                showSection(3);
+            }
+            
+            if (allValid) this.submit();
+        });
+
+        // Enable Send OTP button when email is entered
+        document.getElementById('email').addEventListener('input', function () {
+            const email = this.value;
+            const btn = document.getElementById('sendOtpBtn');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            btn.disabled = !emailRegex.test(email) || btn.classList.contains('loading');
+        });
+
+        // Real-time password strength check
+        document.getElementById('password').addEventListener('input', function() {
+            const strength = checkPasswordStrength(this.value);
+            updatePasswordStrength(strength);
+        });
+
+        // Real-time password confirmation check
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+            
+            if (confirmPassword.length > 0) {
+                if (password === confirmPassword) {
+                    this.style.borderColor = '#28a745';
+                } else {
+                    this.style.borderColor = '#dc3545';
+                }
+            } else {
+                this.style.borderColor = '#dee2e6';
+            }
+        });
+
+        // Initialize
+        showSection(1);
+    </script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrator Account Created - Welcome</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            border: 3px solid #dc3545;
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+            border-bottom: 4px solid #bd2130;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .content {
+            padding: 40px;
+        }
+        .critical-info {
+            background: #fff3cd;
+            border: 3px solid #ffc107;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 25px 0;
+            color: #856404;
+            text-align: center;
+        }
+        .credentials-box {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px;
+            border: 2px dashed #dc3545;
+            margin: 30px 0;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .credential-item {
+            margin: 20px 0;
+            font-size: 18px;
+        }
+        .credential-label {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 16px;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .username {
+            font-size: 28px;
+            font-weight: bold;
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 2px solid #f5c6cb;
+        }
+        .password {
+            font-size: 24px;
+            font-weight: bold;
+            color: #28a745;
+            background: #d4edda;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 2px solid #c3e6cb;
+            letter-spacing: 2px;
+        }
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 16px 40px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 25px 0;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(40, 167, 69, 0.6);
+        }
+        .footer {
+            text-align: center;
+            padding: 30px;
+            font-size: 14px;
+            color: #666;
+            border-top: 2px solid #eee;
+            background: #f8f9fa;
+        }
+        .security-note {
+            background: #f8d7da;
+            border: 2px solid #f5c6cb;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: #721c24;
+        }
+        .admin-privileges {
+            background: #e3f2fd;
+            border: 2px solid #bbdefb;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👑 Administrator Account Created</h1>
+            <p>Welcome to Smart Edu Platform Administration</p>
+        </div>
+        
+        <div class="content">
+            <p>Dear <strong th:text="${firstName}">Administrator</strong>,</p>
+            
+            <p>Congratulations! Your administrator account for the Smart Edu Platform has been successfully created by the system administrator.</p>
+
+            <div class="critical-info">
+                <h3>🚨 IMMEDIATE ACTION REQUIRED</h3>
+                <p>You must change your temporary password immediately after first login.</p>
+            </div>
+
+            <div class="credentials-box">
+                <h2>Your Temporary Login Credentials</h2>
+                
+                <div class="credential-item">
+                    <span class="credential-label">Username:</span>
+                    <div class="username" th:text="${username}">admin_username</div>
+                </div>
+                
+                <div class="credential-item">
+                    <span class="credential-label">Temporary Password:</span>
+                    <div class="password" th:text="${tempPassword}">temp_password123</div>
+                </div>
+                
+                <div class="credential-item">
+                    <span class="credential-label">Login URL:</span>
+                    <br>
+                    <a th:href="${loginUrl}" th:text="${loginUrl}" style="font-size: 16px; color: #0056b3;"></a>
+                </div>
+            </div>
+
+            <div class="security-note">
+                <h4>🔐 Security Instructions:</h4>
+                <ul>
+                    <li><strong>This is a temporary password - change it immediately after login</strong></li>
+                    <li>Do not share these credentials with anyone</li>
+                    <li>Access the platform only from trusted devices</li>
+                    <li>Enable two-factor authentication for enhanced security</li>
+                    <li>Log out after each session</li>
+                </ul>
+            </div>
+
+            <div class="admin-privileges">
+                <h4>🎯 Administrator Privileges:</h4>
+                <ul>
+                    <li>Manage teachers and students</li>
+                    <li>Monitor system activity</li>
+                    <li>Generate reports and analytics</li>
+                    <li>Access user management tools</li>
+                    <li>View platform statistics</li>
+                </ul>
+            </div>
+
+            <div style="text-align: center;">
+                <a th:href="${loginUrl}" class="button">🔑 Login to Admin Dashboard</a>
+            </div>
+
+            <p><strong>First Login Steps:</strong></p>
+            <ol>
+                <li>Click the login button above or use the provided URL</li>
+                <li>Enter your username and temporary password</li>
+                <li>You will be immediately prompted to set a new secure password</li>
+                <li>Complete your security setup</li>
+                <li>Access the administrator dashboard</li>
+            </ol>
+
+            <p>If you encounter any issues or have questions about your administrator role, 
+            please contact the super administrator or our support team at 
+            <a th:href="'mailto:' + ${supportEmail}" th:text="${supportEmail}">support</a>.</p>
+            
+            <p>Welcome aboard! We're excited to have you as part of our administration team.</p>
+            
+            <p>Best regards,<br>
+            <strong th:text="${companyName}">Smart Edu Platform Administration</strong></p>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; 2025 <span th:text="${companyName}">Smart Edu Platform</span>. All rights reserved.</p>
+            <p><strong>Confidential:</strong> This email contains sensitive security information.</p>
+        </div>
+    </div>
+</body>
+</html>

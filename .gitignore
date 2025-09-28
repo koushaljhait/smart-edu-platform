@@ -1,0 +1,56 @@
+# Proprietary Software - Koushal Jha I Technologies
+# Confidential code and configuration files
+
+# Compiled class files
+*.class
+target/
+build/
+bin/
+
+# Log files (may contain sensitive data)
+*.log
+logs/
+
+# Configuration files (sensitive data)
+*.properties
+*.yml
+*.yaml
+.env
+config/application-*.properties
+
+# Database files
+*.db
+*.mv.db
+*.trace.db
+data/
+
+# IDE (may contain project-specific settings)
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Maven local repository
+.m2/
+
+# Temporary files (sensitive data)
+tmp/
+temp/
+uploads/
+
+# Backup files
+*.bak
+*.backup
+
+# Certificate and key files
+*.p12
+*.jks
+*.keystore
+*.truststore
+*.crt
+*.key

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance Mode - Smart Edu Platform</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .maintenance-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+        .icon {
+            font-size: 64px;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .schedule-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        .time-slot {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+        .manual-extension {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .support {
+            color: #666;
+            font-size: 14px;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+<body>
+    <div class="maintenance-container">
+        <div class="icon">🔧</div>
+        <h1>System Maintenance</h1>
+        
+        <div th:if="${error == 'login-disabled'}" class="error-message">
+            <strong>Login Temporarily Disabled</strong><br>
+            System is under maintenance. Please try again after 
+            <span th:text="${extendedUntil != null ? extendedUntil : dailyEndTime}">00:30</span>
+        </div>
+        
+        <p>Smart Edu Platform is currently undergoing scheduled maintenance to improve your experience.</p>
+        
+        <div class="schedule-box">
+            <h3>Maintenance Schedule</h3>
+            <div class="time-slot">
+                <span>Daily Maintenance:</span>
+                <strong th:text="${dailyStartTime} + ' to ' + ${dailyEndTime}">23:40 to 00:30</strong>
+            </div>
+            
+            <div th:if="${isManual}" class="manual-extension">
+                <strong>⚠️ Extended Maintenance</strong><br>
+                Maintenance extended until: 
+                <span th:text="${extendedUntil}">01:00</span>
+            </div>
+        </div>
+        
+        <p>During this time:</p>
+        <ul style="text-align: left; display: inline-block;">
+            <li>Homepage remains accessible</li>
+            <li>Login functionality is temporarily disabled</li>
+            <li>All services will resume automatically after maintenance</li>
+        </ul>
+        
+        <div class="support">
+            <strong>Need immediate assistance?</strong><br>
+            Contact: support@koushaljha.com<br>
+            <small>Super administrators have access during maintenance</small>
+        </div>
+        
+        <!-- Auto-refresh when maintenance ends -->
+        <script>
+            // Check maintenance status every 30 seconds
+            setInterval(() => {
+                fetch('/api/maintenance/status')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.active) {
+                            window.location.href = '/';
+                        }
+                    });
+            }, 30000);
+        </script>
+    </div>
+</body>
+</html>
